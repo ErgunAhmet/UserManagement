@@ -25,6 +25,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static be.usermanagement.usermanagement.constant.UserImplConstant.*;
 
@@ -35,11 +36,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private Logger logger = LoggerFactory.getLogger(getClass());
     private final UserRepository userRepository;
     private BCryptPasswordEncoder passwordEncoder;
+    private LoginAttemptService loginAttemptService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository,@Lazy BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, @Lazy BCryptPasswordEncoder passwordEncoder, LoginAttemptService loginAttemptService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.loginAttemptService = loginAttemptService;
     }
 
 
@@ -50,6 +53,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             logger.error(USER_NOT_FOUND_BY_USERNAME + username);
             throw new UsernameNotFoundException(USER_NOT_FOUND_BY_USERNAME + username);
         } else {
+            validateLoginAttempt(user);
             user.setLastLoginDateDisplay(user.getLastLoginDate());
             user.setLastLoginDate(new Date());
             userRepository.save(user);
@@ -58,6 +62,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             return userPrincipal;
         }
 
+    }
+
+    private void validateLoginAttempt(User user)  {
+        if (user.isNotLocked()) {
+            if (loginAttemptService.hasExceededMaxAttempts(user.getUsername())) {
+                user.setNotLocked(false);
+            } else {
+                user.setNotLocked(true);
+            }
+        } else {
+            loginAttemptService.evictUserFromLoginAttemptCache(user.getUsername());
+        }
     }
 
     @Override
