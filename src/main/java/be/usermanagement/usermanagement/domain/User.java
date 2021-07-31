@@ -11,8 +11,8 @@ public class User implements Serializable {
     @Column(nullable = false, updatable = false)
     private Long id;
     private String userId;
-    private String firstName;
-    private String lastName;
+    private String firstname;
+    private String lastname;
     private String username;
     private String password;
     private String email;
@@ -20,16 +20,16 @@ public class User implements Serializable {
     private Date lastLoginDate;
     private Date LastLoginDateDisplay;
     private Date joinDate;
-    private String[] roles;
+    private String roles;
     private String[] authorities;
     private boolean isActive;
     private boolean isNotLocked;
 
-    public User(Long id, String userId, String firstName, String lastName, String username, String password, String email, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String[] roles, String[] authorities, boolean isActive, boolean isNotLocked) {
+    public User(Long id, String userId, String firstname, String lastname, String username, String password, String email, String profileImageUrl, Date lastLoginDate, Date lastLoginDateDisplay, Date joinDate, String roles, String[] authorities, boolean isActive, boolean isNotLocked) {
         this.id = id;
         this.userId = userId;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -62,20 +62,20 @@ public class User implements Serializable {
         this.userId = userId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getFirstname() {
+        return firstname;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstname(String firstName) {
+        this.firstname = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setLastname(String lastName) {
+        this.lastname = lastName;
     }
 
     public String getUsername() {
@@ -134,11 +134,11 @@ public class User implements Serializable {
         this.joinDate = joinDate;
     }
 
-    public String[] getRoles() {
+    public String getRoles() {
         return roles;
     }
 
-    public void setRoles(String[] roles) {
+    public void setRoles(String roles) {
         this.roles = roles;
     }
 
